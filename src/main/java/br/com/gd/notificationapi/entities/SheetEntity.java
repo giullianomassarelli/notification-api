@@ -17,8 +17,8 @@ public class SheetEntity {
     @Id
     private String id;
     private String month;
-    private Double input;
-    private Double output;
-    private Double amount;
+    private BigDecimal input;
+    private BigDecimal output;
+    private BigDecimal amount;
 
 }

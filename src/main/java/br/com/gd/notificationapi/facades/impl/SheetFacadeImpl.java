@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 @Component
 @Slf4j
@@ -34,7 +35,8 @@ public class SheetFacadeImpl implements SheetFacade {
             try {
                 List<SheetEntity> sheetEntityList = sheetService.importSheet(file.getInputStream());
                 for (SheetEntity sheetEntity : sheetEntityList) {
-                    if (sheetEntity.getAmount() < 0) {
+                    double amount = sheetEntity.getAmount().doubleValue();
+                    if (amount < 0) {
                         notificationService.sendEmail(sheetEntity);
                     }
                 }

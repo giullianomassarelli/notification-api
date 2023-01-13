@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -52,9 +53,9 @@ public class SheetServiceImpl implements SheetService {
                     Cell cell = cellIterator.next();
                     switch (cellIndex){
                         case 0 -> sheetEntity.setMonth(cell.getStringCellValue());
-                        case 1 -> sheetEntity.setInput(cell.getNumericCellValue());
-                        case 2 -> sheetEntity.setOutput(cell.getNumericCellValue());
-                        case 3 -> sheetEntity.setAmount(cell.getNumericCellValue());
+                        case 1 -> sheetEntity.setInput(BigDecimal.valueOf(cell.getNumericCellValue()));
+                        case 2 -> sheetEntity.setOutput(BigDecimal.valueOf(cell.getNumericCellValue()));
+                        case 3 -> sheetEntity.setAmount(BigDecimal.valueOf(cell.getNumericCellValue()));
                         default -> {
                         }
                     }
