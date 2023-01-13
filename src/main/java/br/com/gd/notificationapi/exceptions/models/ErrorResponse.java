@@ -1,4 +1,4 @@
-package br.com.kitfesta.geradordecupom.exceptions.models;
+package br.com.gd.notificationapi.exceptions.models;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;

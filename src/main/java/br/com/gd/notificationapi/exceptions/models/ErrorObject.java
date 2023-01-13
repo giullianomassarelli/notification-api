@@ -1,4 +1,4 @@
-package br.com.kitfesta.geradordecupom.exceptions.models;
+package br.com.gd.notificationapi.exceptions.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
