@@ -28,28 +28,13 @@ public class SheetFacadeImpl implements SheetFacade {
 
     @Override
     public SheetResponseDTO importSheet(MultipartFile file) {
-        SheetResponseDTO sheetResponseDTO = new SheetResponseDTO(false);
-
         if (sheetService.validateExcelFile(file)) {
-
-            try {
-                List<SheetEntity> sheetEntityList = sheetService.importSheet(file.getInputStream());
-                for (SheetEntity sheetEntity : sheetEntityList) {
-                    double amount = sheetEntity.getAmount().doubleValue();
-                    if (amount < 0) {
-                        notificationService.sendEmail(sheetEntity);
-                    }
-                }
-                sheetResponseDTO.setSuccess(true);
-
-                return sheetResponseDTO;
-
-            } catch (IOException e) {
-                throw new SheetException(SheetEnum.ERROR_WHEN_IMPORT_SHEET);
-            }
+            return importSheetAndSendEmail(file);
+        } else {
+            return new SheetResponseDTO(false);
         }
-        return sheetResponseDTO;
     }
+
     @Override
     public List<SheetEntity> getAll() {
         return sheetService.getAll();
@@ -58,5 +43,25 @@ public class SheetFacadeImpl implements SheetFacade {
     @Override
     public void delete() {
         sheetService.delete();
+    }
+
+    private SheetResponseDTO importSheetAndSendEmail (MultipartFile file) {
+        SheetResponseDTO sheetResponseDTO = new SheetResponseDTO(false);
+
+        try {
+            List<SheetEntity> sheetEntityList = sheetService.importSheet(file.getInputStream());
+            for (SheetEntity sheetEntity : sheetEntityList) {
+                double amount = sheetEntity.getAmount().doubleValue();
+                if (amount < 0) {
+                    notificationService.sendEmail(sheetEntity);
+                }
+            }
+            sheetResponseDTO.setSuccess(true);
+
+            return sheetResponseDTO;
+
+        } catch (IOException e) {
+            throw new SheetException(SheetEnum.ERROR_WHEN_IMPORT_SHEET);
+        }
     }
 }
