@@ -56,6 +56,7 @@ public class SheetFacadeImpl implements SheetFacade {
                     notificationService.sendEmail(sheetEntity);
                 }
             }
+
             sheetResponseDTO.setSuccess(true);
 
             return sheetResponseDTO;
