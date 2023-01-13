@@ -1,5 +1,6 @@
 package br.com.gd.notificationapi.exceptions.handlers;
 
+import br.com.gd.notificationapi.exceptions.NotificationException;
 import br.com.gd.notificationapi.exceptions.SheetException;
 import br.com.gd.notificationapi.exceptions.models.ErrorObject;
 import br.com.gd.notificationapi.exceptions.models.ErrorResponse;
@@ -44,6 +45,16 @@ public class ExceptionControllerAdvice extends ResponseEntityExceptionHandler {
     @ResponseBody
     @ExceptionHandler(SheetException.class)
     ResponseEntity<ErrorResponse> handlerSheetException(SheetException ex) {
+        return ResponseEntity.status(ex.getError().getStatusCode())
+                .body((new ErrorResponse(Instant.now().toEpochMilli(),
+                        ex.getError().getStatusCode(),
+                        ex.getError().getCode(),
+                        ex.getMessage(), new ArrayList<>())));
+    }
+
+    @ResponseBody
+    @ExceptionHandler(NotificationException.class)
+    ResponseEntity<ErrorResponse> handlerNotificationException(NotificationException ex) {
         return ResponseEntity.status(ex.getError().getStatusCode())
                 .body((new ErrorResponse(Instant.now().toEpochMilli(),
                         ex.getError().getStatusCode(),
