@@ -18,7 +18,7 @@ public class NotificationServiceImpl implements NotificationService {
     public void sendEmail(SheetEntity sheetEntity) {
 
             SimpleEmail email = new SimpleEmail();
-            email.setHostName("smtpgmail.com");
+            email.setHostName("smtp.gmail.com");
             email.setSmtpPort(587);
             email.setAuthenticator(new DefaultAuthenticator("gm.dev2022@gmail.com", "jgntapazcnvswuwe"));
             email.setSSLOnConnect(true);
