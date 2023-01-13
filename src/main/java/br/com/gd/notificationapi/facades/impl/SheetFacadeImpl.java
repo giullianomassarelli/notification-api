@@ -40,4 +40,9 @@ public class SheetFacadeImpl implements SheetFacade {
     public List<SheetEntity> getAll() {
         return sheetService.getAll();
     }
+
+    @Override
+    public void delete() {
+        sheetService.delete();
+    }
 }
