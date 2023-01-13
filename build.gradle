@@ -19,22 +19,29 @@ repositories {
 }
 
 dependencies {
+
+	//for mongoDB
 	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+
+	//for Spring boot
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	//for lombok
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
+	//for swagger
 	implementation 'io.springfox:springfox-swagger2:2.9.2'
 	implementation 'io.springfox:springfox-swagger-ui:2.9.2'
 
+	//for import .csv .xlsx
 	implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '4.0.1'
 
+	//for sending emails
 	implementation group: 'org.apache.commons', name: 'commons-email', version: '1.5'
 
-
-}
-
-tasks.named('test') {
-	useJUnitPlatform()
+	//for tests
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.powermock:powermock-module-junit4:2.0.2'
+	testImplementation 'org.powermock:powermock-api-mockito2:2.0.2'
 }

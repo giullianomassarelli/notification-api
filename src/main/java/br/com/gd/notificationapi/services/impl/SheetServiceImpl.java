@@ -29,14 +29,17 @@ public class SheetServiceImpl implements SheetService {
     @Autowired
     private SheetRepository sheetRepository;
 
+    private final String SHEET_NAME = "balance" ; //sheet name in Excel file
+    private final String VALIDATOR = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
     @Override
     public List<SheetEntity> importSheet(InputStream inputStream)  {
-        log.info("import new excel file : {}", inputStream.toString());
+        log.info("import new file");
         List<SheetEntity> sheetEntityList = new ArrayList<>();
 
         try {
             XSSFWorkbook workbook = new XSSFWorkbook(inputStream);
-            XSSFSheet sheet = workbook.getSheet("balance"); //sheet name in Excel file
+            XSSFSheet sheet = workbook.getSheet(SHEET_NAME);
 
             int rowIndex = 0;
 
@@ -71,8 +74,8 @@ public class SheetServiceImpl implements SheetService {
 
     @Override
     public boolean validateExcelFile(MultipartFile file) {
-        log.info("verify if file is a valid file: {}", file.toString());
-        return Objects.equals(file.getContentType(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" );
+        log.info("verify if file is a valid file");
+        return Objects.equals(file.getContentType(), VALIDATOR );
     }
 
     @Override
