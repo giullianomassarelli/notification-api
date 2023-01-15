@@ -1,5 +1,6 @@
 package br.com.gd.notificationapi.controllers;
 
+import br.com.gd.notificationapi.dtos.responses.ImportResponseDTO;
 import br.com.gd.notificationapi.dtos.responses.SheetResponseDTO;
 import br.com.gd.notificationapi.entities.SheetEntity;
 import br.com.gd.notificationapi.facades.SheetFacade;
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -19,12 +21,12 @@ public class SheetController {
     private SheetFacade sheetFacade;
 
     @PostMapping
-    public ResponseEntity<SheetResponseDTO> importSheet (@RequestParam("file") MultipartFile file){
-        return new ResponseEntity<SheetResponseDTO>(sheetFacade.importSheet(file), HttpStatus.CREATED);
+    public ResponseEntity<ImportResponseDTO> importSheet (@RequestParam("file") MultipartFile file) throws IOException {
+        return new ResponseEntity<>(sheetFacade.importFile(file), HttpStatus.CREATED);
     }
 
     @GetMapping
-    public ResponseEntity<List<SheetEntity>> getAll (){
+    public ResponseEntity<List<SheetResponseDTO>> getAll (){
         return new ResponseEntity<>(sheetFacade.getAll(), HttpStatus.ACCEPTED);
     }
 
