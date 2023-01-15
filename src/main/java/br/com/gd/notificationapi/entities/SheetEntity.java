@@ -21,4 +21,13 @@ public class SheetEntity {
     private BigDecimal output;
     private BigDecimal amount;
 
+    @Override
+    public String toString() {
+        return "SheetEntity{" +
+                "month='" + month + '\'' +
+                ", input=" + input +
+                ", output=" + output +
+                ", amount=" + amount +
+                '}';
+    }
 }

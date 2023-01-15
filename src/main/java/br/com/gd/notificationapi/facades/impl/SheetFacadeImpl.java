@@ -1,19 +1,27 @@
 package br.com.gd.notificationapi.facades.impl;
 
+import br.com.gd.notificationapi.dtos.responses.ImportResponseDTO;
 import br.com.gd.notificationapi.dtos.responses.SheetResponseDTO;
 import br.com.gd.notificationapi.entities.SheetEntity;
 import br.com.gd.notificationapi.exceptions.SheetException;
 import br.com.gd.notificationapi.exceptions.enums.SheetEnum;
 import br.com.gd.notificationapi.facades.SheetFacade;
+import br.com.gd.notificationapi.mappers.SheetMapper;
 import br.com.gd.notificationapi.services.NotificationService;
 import br.com.gd.notificationapi.services.SheetService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
+import java.util.Iterator;
 import java.util.List;
 @Component
 @Slf4j
@@ -25,19 +33,31 @@ public class SheetFacadeImpl implements SheetFacade {
     @Autowired
     private NotificationService notificationService;
 
+    @Autowired
+    private SheetMapper sheetMapper;
+
+    private final String SHEET_NAME = "balance" ; //sheet name in Excel file
 
     @Override
-    public SheetResponseDTO importSheet(MultipartFile file) {
-        if (sheetService.validateExcelFile(file)) {
-            return importSheetAndSendEmail(file);
-        } else {
-            return new SheetResponseDTO(false);
+    public ImportResponseDTO importFile (MultipartFile file) throws IOException {
+        ImportResponseDTO importResponseDTO = new ImportResponseDTO(false);
+
+        log.info("try import file");
+        if(validateFile(file) && importSheet(file.getInputStream())){
+            importResponseDTO.setSuccess(true);
         }
+
+      return importResponseDTO;
+    }
+
+
+    public boolean validateFile (MultipartFile file) {
+        return sheetService.validateExcelFile(file);
     }
 
     @Override
-    public List<SheetEntity> getAll() {
-        return sheetService.getAll();
+    public List<SheetResponseDTO> getAll() {
+        return sheetMapper.toDtoList(sheetService.getAll());
     }
 
     @Override
@@ -45,24 +65,55 @@ public class SheetFacadeImpl implements SheetFacade {
         sheetService.delete();
     }
 
-    private SheetResponseDTO importSheetAndSendEmail (MultipartFile file) {
-        SheetResponseDTO sheetResponseDTO = new SheetResponseDTO(false);
+    private boolean importSheet(InputStream inputStream) {
+        log.info("import new file");
 
+        boolean status = false;
         try {
-            List<SheetEntity> sheetEntityList = sheetService.importSheet(file.getInputStream());
-            for (SheetEntity sheetEntity : sheetEntityList) {
-                double amount = sheetEntity.getAmount().doubleValue();
-                if (amount < 0) {
-                    notificationService.sendEmail(sheetEntity);
+            XSSFWorkbook workbook = new XSSFWorkbook(inputStream);
+            XSSFSheet sheet = workbook.getSheet(SHEET_NAME);
+
+            int rowIndex = 0;
+
+            for (Row row : sheet) {
+                if (rowIndex == 0) {
+                    rowIndex++;
+                    continue;
                 }
+
+                Iterator<Cell> cellIterator = row.iterator();
+                int cellIndex = 0;
+                SheetEntity sheetEntity = new SheetEntity();
+                while (cellIterator.hasNext()) {
+                    Cell cell = cellIterator.next();
+                    switch (cellIndex) {
+                        case 0 -> sheetEntity.setMonth(cell.getStringCellValue());
+                        case 1 -> sheetEntity.setInput(BigDecimal.valueOf(cell.getNumericCellValue()));
+                        case 2 -> sheetEntity.setOutput(BigDecimal.valueOf(cell.getNumericCellValue()));
+                        case 3 -> sheetEntity.setAmount(BigDecimal.valueOf(cell.getNumericCellValue()));
+                        default -> {
+                        }
+                    }
+                    cellIndex++;
+                }
+                sheetService.save(sheetEntity);
+                sendEmail(sheetEntity.getMonth(), sheetEntity.getAmount());
+                status = true;
             }
-
-            sheetResponseDTO.setSuccess(true);
-
-            return sheetResponseDTO;
 
         } catch (IOException e) {
             throw new SheetException(SheetEnum.ERROR_WHEN_IMPORT_SHEET);
         }
+        return status;
     }
+
+    public void sendEmail (String month, BigDecimal amount) {
+        if (amount.doubleValue() < 0){
+            log.info("in mounth: {} had a negative balance, sending email", month);
+            notificationService.sendEmail(month, amount);
+        }
+    }
+
 }
+
+

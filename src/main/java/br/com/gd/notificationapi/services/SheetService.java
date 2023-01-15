@@ -8,7 +8,6 @@ import java.util.List;
 
 public interface SheetService {
 
-    List<SheetEntity> importSheet (InputStream inputStream);
 
     boolean validateExcelFile (MultipartFile file);
     SheetEntity save (SheetEntity sheetEntity);

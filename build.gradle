@@ -40,6 +40,9 @@ dependencies {
 	//for sending emails
 	implementation group: 'org.apache.commons', name: 'commons-email', version: '1.5'
 
+	//for modelMapper
+	implementation group: 'org.modelmapper', name: 'modelmapper', version: '3.1.0'
+
 	//for tests
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.powermock:powermock-module-junit4:2.0.2'

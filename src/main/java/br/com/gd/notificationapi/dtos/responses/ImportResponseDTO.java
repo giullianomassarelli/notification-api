@@ -4,16 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class SheetResponseDTO {
+public class ImportResponseDTO {
 
-    private String month;
-    private BigDecimal input;
-    private BigDecimal output;
-    private BigDecimal amount;
-
+    private Boolean success;
 }
