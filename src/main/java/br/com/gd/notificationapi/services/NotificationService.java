@@ -1,8 +1,8 @@
 package br.com.gd.notificationapi.services;
 
-import br.com.gd.notificationapi.entities.SheetEntity;
+import java.math.BigDecimal;
 
 public interface NotificationService {
 
-    void sendEmail(SheetEntity sheetEntity);
+    void sendEmail(String month, BigDecimal amount);
 }
