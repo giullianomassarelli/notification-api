@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class SheetResponseDTO {
+public class ImportResponseDTO {
 
     private Boolean success;
 }
