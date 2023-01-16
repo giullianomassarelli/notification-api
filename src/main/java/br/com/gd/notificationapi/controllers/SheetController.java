@@ -2,7 +2,6 @@ package br.com.gd.notificationapi.controllers;
 
 import br.com.gd.notificationapi.dtos.responses.ImportResponseDTO;
 import br.com.gd.notificationapi.dtos.responses.SheetResponseDTO;
-import br.com.gd.notificationapi.entities.SheetEntity;
 import br.com.gd.notificationapi.facades.SheetFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
