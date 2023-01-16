@@ -12,7 +12,7 @@ import br.com.gd.notificationapi.services.SheetService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -40,19 +40,9 @@ public class SheetFacadeImpl implements SheetFacade {
 
     @Override
     public ImportResponseDTO importFile (MultipartFile file) throws IOException {
-        ImportResponseDTO importResponseDTO = new ImportResponseDTO(false);
-
         log.info("try import file");
-        if(validateFile(file) && importSheet(file.getInputStream())){
-            importResponseDTO.setSuccess(true);
-        }
-
-      return importResponseDTO;
-    }
-
-
-    public boolean validateFile (MultipartFile file) {
-        return sheetService.validateExcelFile(file);
+        verifyFile(file);
+        return new ImportResponseDTO(importSheet(file.getInputStream()));
     }
 
     @Override
@@ -65,13 +55,20 @@ public class SheetFacadeImpl implements SheetFacade {
         sheetService.delete();
     }
 
-    private boolean importSheet(InputStream inputStream) {
-        log.info("import new file");
+    public void verifyFile(MultipartFile file) {
+        if(sheetService.validateExcelFile(file)) {
+            log.info("correct file");
+        }else {
+            log.info("incorrect file");
+        }
+    }
 
+    public boolean importSheet(InputStream inputStream) {
+        log.info("import new sheet");
         boolean status = false;
         try {
             XSSFWorkbook workbook = new XSSFWorkbook(inputStream);
-            XSSFSheet sheet = workbook.getSheet(SHEET_NAME);
+            Sheet sheet = workbook.getSheet(SHEET_NAME);
 
             int rowIndex = 0;
 
@@ -97,8 +94,9 @@ public class SheetFacadeImpl implements SheetFacade {
                     cellIndex++;
                 }
                 sheetService.save(sheetEntity);
-                sendEmail(sheetEntity.getMonth(), sheetEntity.getAmount());
                 status = true;
+                sendEmail(sheetEntity.getMonth(), sheetEntity.getAmount());
+
             }
 
         } catch (IOException e) {
