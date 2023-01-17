@@ -19,12 +19,12 @@ public class SheetMapper {
     private ModelMapper mapper;
 
     public SheetResponseDTO toDto(SheetEntity entity) {
-        log.info("convertendo entidade {} para dto", entity);
+        log.info("convert entity {} to dto", entity);
         return mapper.map(entity, SheetResponseDTO.class);
     }
 
     public List<SheetResponseDTO> toDtoList(List<SheetEntity> list) {
-        log.info("convertendo lista de entidade {} para lista de dto", list);
+        log.info("convert entity list  {} to dto list ", list);
         List<SheetEntity> result = new ArrayList<>();
         list.forEach(result::add);
         return result.stream()

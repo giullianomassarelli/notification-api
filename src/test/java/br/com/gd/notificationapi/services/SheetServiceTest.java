@@ -11,12 +11,16 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -41,7 +45,6 @@ public class SheetServiceTest {
         MockitoAnnotations.openMocks(this);
         when(sheetRepository.findAll()).thenReturn(returnListSheetEntity());
         when(sheetRepository.save(returnSheetEntityPositivyAmount())).thenReturn(returnSheetEntityPositivyAmount());
-
     }
 
     @Test
@@ -54,8 +57,10 @@ public class SheetServiceTest {
         assertEquals(returnSheetEntityPositivyAmount(), sheetService.save(returnSheetEntityPositivyAmount()));
     }
 
-
-
+    @Test
+    public void validadeExcelFileMustReturnOk () throws Exception {
+        assertTrue(sheetService.validateExcelFile(returnValidFile()));
+    }
 
 
     public SheetEntity returnSheetEntityPositivyAmount() {
@@ -87,5 +92,15 @@ public class SheetServiceTest {
         list.add(returnSheetEntityPositivyAmount());
 
         return list;
+    }
+
+    public MockMultipartFile returnValidFile () throws IOException {
+
+        FileInputStream file = new FileInputStream("src/test/resources/test.xls");
+        return new MockMultipartFile(
+                "test",
+                "test.xls",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                file);
     }
 }
