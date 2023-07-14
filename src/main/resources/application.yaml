@@ -32,9 +32,9 @@ management:
 email:
   smpt-port: 584
   host-name: smtp.gmail.com
-  user: gm.dev2022@gmail.com
-  password: jgntapazcnvswuwe
-  to: massarelli47@gmail.com
-  from: gm.dev2002@gmail.com
+  user: 
+  password: 
+  to: 
+  from: 
   subject: Balanço anual - Gestão do mês
 
